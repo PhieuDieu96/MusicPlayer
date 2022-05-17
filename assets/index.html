@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music player</title>
-    <link rel="stylesheet" href="./main.css">
+    <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -93,28 +93,32 @@
     const $$ = document.querySelectorAll.bind(document)
 
     const app = {
+        currentIndex: 0,
         songs: [
             {
                 name: "Phi Dieu & Ve Sau",
                 singer: "Nham Nhien",
-                path: './assets/music/1.m4a'
+                path: './MusicPlayer/assets/music/1.m4a',
+                image: './MusicPlayer/assets/img/1.jpg'
             },
             {
                 name: "Bach Nguyet Quang Va Net Chu Sa",
                 singer: "Dai Tu",
-                path: './assets/music/2.m4a'
+                path: './assets/music/2.m4a',
+                image: './assets/img/2.jpeg'
             },
             {
                 name: "Thoi Khong Sai Lech ",
                 singer: "Ngai Than",
-                path: './assets/music/3.m4a'
+                path: './assets/music/3.m4a',
+                image: './assets/img/3.jpeg'
             }
         ],
         render: function () {
             const htmls = this.songs.map(song => {
                 return `
                 <div class="song">
-                    <div class="thumb" style="background-image: url('.')">
+                    <div class="thumb" style="background-image: url('${song.image}')">
                     </div>
                     <div class="body">
                         <h3 class="title">${song.name}</h3>
@@ -127,17 +131,44 @@
             })
             $('.playlist').innerHTML = htmls.join('')
         },
+        defineProperties: function () {
+            Object.defineProperty(this, 'currentSong', {
+                get: function() {
+                    return this.songs[this.currentIndex]
+                }
+            })
+        },
         handleEvents: function () {
             const cd = $('.cd')
             const cdWidth = cd.offsetWidth
             document.onscroll = function () {
-                const scrollTop = window.scrollY
+                const scrollTop = document.documentElement.scrollTop
                 const newCDWidth = cdWidth - scrollTop
+
                 cd.style.width = newCDWidth > 0 ? newCDWidth + 'px' : 0
-            }
+                cd.style.opacity = newCDWidth / cdWidth
+             }
         },
+        loadCurrentSong: function() {
+            const heading = $('header h2')
+            const cdThumb = $('.cd-thumb')
+            const audio = $('#audio')
+
+            heading.textContent = this.currentSong.name
+            cdThumb.style.backgroundImage = `url('${this.currentSong.image})`
+            audio.src = this.currentSong.path
+            console.log(heading, cdThumb, audio)
+        },
+
         start: function () {
+            //Định nghĩa các thuộc tính cho object
+            this.defineProperties()
+            //Lắng nghe và xử lý sự kiên
             this.handleEvents()
+
+            //Tải bài đầu tiên khi chạy ứng dụng
+            this.currentSong
+            //render playlist
             this.render()
         }
     }
