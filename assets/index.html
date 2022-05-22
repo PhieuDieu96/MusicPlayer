@@ -112,7 +112,7 @@
         isPlaying: false,
         isRandom: false,
         isRepeat: false,
-        config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY) || {}),
+        config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
         setConfig: function (key, value) {
             this.config[key] =  value
             localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config))
@@ -244,7 +244,7 @@
             // khi random song
             randomBtn.onclick = function () {
                 _this.isRandom = !_this.isRandom
-                _this.setConfig('isRandom', _this.randomSong)
+                _this.setConfig('isRandom', _this.isRandom)
                 randomBtn.classList.toggle('active', _this.isRandom)
             }
             // xử lý lặp lại 1 song
@@ -341,8 +341,8 @@
             //render playlist
             this.render()
             //hiển thị trạng thái ban đầu của repeat và random
-            repeatBtn.classList.toggle('active', _this.isRepeat)
-            randomBtn.classList.toggle('active', _this.isRandom)
+            repeatBtn.classList.toggle('active', this.isRepeat)
+            randomBtn.classList.toggle('active', this.isRandom)
         }
     }
     app.start()
